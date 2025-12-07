@@ -1,9 +1,5 @@
 # 网络主机扫描软件 (Netscanner) v1.0
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-blue)
-
 一款功能强大的网络主机存活扫描工具，提供图形界面和命令行两种操作方式。
 
 **开发者**：张夏灵 | **班级**：网云2302 | **学号**：542307280233
