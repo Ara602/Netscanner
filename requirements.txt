@@ -1,0 +1,14 @@
+# 网络主机扫描软件依赖包
+# 基础包
+tkinter  # Python内置，通常不需要安装
+
+# 可选包（用于Excel导出）
+pandas>=1.3.0
+openpyxl>=3.0.0
+
+# 开发包
+black>=22.0.0
+flake8>=4.0.0
+
+# 测试包
+pytest>=7.0.0
