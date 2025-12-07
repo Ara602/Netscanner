@@ -5,8 +5,8 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
-    hiddenimports=[],
+    datas=[('src', 'src'), ('requirements.txt', '.'), ('README.md', '.')],
+    hiddenimports=['pandas', 'openpyxl', 'tkinter', 'tkinter.ttk'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -35,4 +35,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    uac_admin=True,
+    icon=['icon.ico'],
 )
