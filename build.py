@@ -25,7 +25,7 @@ def build_windows():
     
     # PyInstaller命令
     cmd = [
-        'pyinstaller',
+        sys.executable, '-m', 'PyInstaller',
         '--name=网络主机扫描器',
         '--windowed',  # 无控制台窗口
         '--icon=icon.ico',  # 如果图标存在
@@ -61,7 +61,7 @@ def build_linux():
     
     # PyInstaller命令
     cmd = [
-        'pyinstaller',
+        sys.executable, '-m', 'PyInstaller',
         '--name=network-scanner',
         '--add-data=src:src',  # Linux使用冒号
         '--add-data=requirements.txt:.',
