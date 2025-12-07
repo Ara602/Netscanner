@@ -176,8 +176,14 @@ def main():
     
     # 处理命令行参数
     if len(sys.argv) == 1:
-        # 没有参数 - 显示主菜单
-        main_menu()
+        # 如果是打包后的程序（且无控制台），直接启动GUI
+        if is_frozen:
+            if not check_dependencies():
+                return
+            run_gui()
+        else:
+            # 开发环境或有控制台时 - 显示主菜单
+            main_menu()
     
     elif len(sys.argv) == 2 and sys.argv[1] in ['gui', '--gui', '-g']:
         # 直接启动GUI模式
