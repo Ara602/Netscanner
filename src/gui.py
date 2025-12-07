@@ -10,10 +10,12 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import threading
-import time
 import queue
 from datetime import datetime
-from src.scanner import NetworkScanner, HostInfo
+from typing import List
+
+# 导入本地模块
+from .scanner import NetworkScanner, HostInfo
 
 class ScannerGUI:
     """扫描器图形界面"""
@@ -370,8 +372,10 @@ class ScannerGUI:
         stats += f"在线率: {(online_count/total_count*100):.1f}%\n\n"
         
         if online_count > 0:
-            avg_time = sum([h.response_time for h in results if h.response_time > 0]) / online_count
-            stats += f"平均响应时间: {avg_time:.1f}ms\n"
+            online_hosts = [h for h in results if h.status == '在线' and h.response_time > 0]
+            if online_hosts:
+                avg_time = sum([h.response_time for h in online_hosts]) / len(online_hosts)
+                stats += f"平均响应时间: {avg_time:.1f}ms\n"
             
             # 显示前5个在线主机
             stats += "\n在线主机:\n"
@@ -395,12 +399,19 @@ class ScannerGUI:
         for item in self.result_tree.get_children():
             values = self.result_tree.item(item)['values']
             if values:
+                # 处理响应时间字符串
+                response_time_str = values[4]
+                if response_time_str == 'N/A':
+                    response_time = 0.0
+                else:
+                    response_time = float(response_time_str.replace('ms', ''))
+                
                 host = HostInfo(
                     ip=values[0],
                     status=values[1],
                     mac=values[2],
                     hostname=values[3],
-                    response_time=float(values[4].replace('ms', '')) if values[4] != 'N/A' else 0.0,
+                    response_time=response_time,
                     os_type=values[5]
                 )
                 results.append(host)

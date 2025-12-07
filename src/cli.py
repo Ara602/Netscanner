@@ -8,9 +8,15 @@
 """
 
 import argparse
-import json
-from datetime import datetime
-from src.scanner import NetworkScanner
+import sys
+import os
+
+# 确保可以导入本地模块
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
+
+from .scanner import NetworkScanner
 
 def main():
     parser = argparse.ArgumentParser(description='网络主机存活扫描软件 - 命令行版')
@@ -46,7 +52,6 @@ def main():
         results = scanner.scan_range(args.target, progress_callback)
         
         print(f"\n\n扫描完成!")
-        print(f"扫描时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"扫描主机数: {len(results)}")
         print(f"在线主机数: {len([h for h in results if h.status == '在线'])}")
         

@@ -10,16 +10,17 @@
 import subprocess
 import platform
 import ipaddress
-import threading
 import queue
 import time
 import socket
-import struct
 import ctypes
 import os
 import re
+import json
+import csv
+import datetime
 from dataclasses import dataclass
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Windows下需要特殊处理
@@ -201,6 +202,11 @@ class NetworkScanner:
         """
         targets = []
         
+        # 检查是否为"自动检测"
+        if target_input == "自动检测":
+            network = self._get_local_network()
+            target_input = network
+        
         try:
             # 单个IP
             if re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', target_input):
@@ -229,6 +235,13 @@ class NetworkScanner:
                         line = line.strip()
                         if line and not line.startswith('#'):
                             targets.extend(self._parse_targets(line))
+            else:
+                # 尝试解析为单个IP
+                try:
+                    ipaddress.ip_address(target_input)
+                    targets.append(target_input)
+                except:
+                    pass
         except Exception as e:
             print(f"解析目标时出错: {e}")
             
@@ -260,7 +273,7 @@ class NetworkScanner:
         
         return host_info
     
-    def scan_range(self, target_input: str, progress_callback=None) -> List[HostInfo]:
+    def scan_range(self, target_input: str, progress_callback: Optional[Callable[[int, int], None]] = None) -> List[HostInfo]:
         """
         扫描指定范围的主机
         
@@ -333,8 +346,6 @@ class NetworkScanner:
     
     def _export_csv(self, results: List[HostInfo], filename: str):
         """导出为CSV格式"""
-        import csv
-        
         with open(filename, 'w', newline='', encoding='utf-8-sig') as f:
             writer = csv.writer(f)
             writer.writerow(['IP地址', '状态', 'MAC地址', '主机名', '响应时间(ms)', '操作系统'])
@@ -346,9 +357,6 @@ class NetworkScanner:
     
     def _export_json(self, results: List[HostInfo], filename: str):
         """导出为JSON格式"""
-        import json
-        import datetime
-        
         data = {
             'scan_time': datetime.datetime.now().isoformat(),
             'total_hosts': len(results),
@@ -385,7 +393,7 @@ class NetworkScanner:
                     f.write(f"IP地址: {host.ip}\n")
                     f.write(f"  主机名: {host.hostname}\n")
                     f.write(f"  MAC地址: {host.mac}\n")
-                    f.write(f"  响应时间: {host.response_time}ms\n\n")
+                    f.write(f"  响应时间: {host.response_time:.1f}ms\n\n")
     
     def _export_excel(self, results: List[HostInfo], filename: str):
         """导出为Excel格式（需要pandas库）"""

@@ -1,6 +1,5 @@
 # 网络主机扫描软件依赖包
-# 基础包
-tkinter  # Python内置，通常不需要安装
+# 基础包（tkinter  # Python内置，通常不需要安装）
 
 # 可选包（用于Excel导出）
 pandas>=1.3.0
@@ -12,3 +11,6 @@ flake8>=4.0.0
 
 # 测试包
 pytest>=7.0.0
+
+# 打包工具（可选）
+pyinstaller>=5.0.0
